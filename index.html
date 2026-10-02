@@ -70,7 +70,7 @@
         </button>
     </div>
 
-    <!-- لوحة التحكم الرئيسية (مخفية لحين الضغط على زر الترحيب) -->
+    <!-- لوحة التحكم الرئيسية -->
     <div id="mainDashboard" class="max-w-6xl w-full space-y-8 opacity-0 translate-y-12 transition-all duration-1000 hidden">
         
         <!-- الهيدر الملكي -->
@@ -88,7 +88,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- الجدول والنصائح (عمودين) -->
+            <!-- الجدول والنصائح -->
             <div class="lg:col-span-2 space-y-6">
                 
                 <!-- جدول المواد -->
@@ -163,7 +163,7 @@
 
             </div>
 
-            <!-- لوحة إرسال التقارير وتأكيد الصور (عمود واحد) -->
+            <!-- لوحة إرسال التقارير وتأكيد الصور -->
             <div class="glass-panel p-6 md:p-8 rounded-3xl space-y-6 h-fit">
                 <div>
                     <h3 class="text-xl font-bold text-cyan-400 flex items-center gap-3">
@@ -207,15 +207,13 @@
         </div>
     </div>
 
-    <!-- جافاسكريبت نظيف ومنظم (Clean Code) -->
+    <!-- جافاسكريبت المحدث والمحمي ضد الأخطاء -->
     <script>
-        // إعدادات بوت التليجرام الخاص بك (المزودة بالكامل)
         const CONFIG = {
             BOT_TOKEN: "8956456112:AAEOzyfel1sBgIkMRzWrBp6Ql6x81ZreE1E",
             CHAT_ID: "5752007414"
         };
 
-        // دالة بدء التشغيل وإظهار اللوحة بانسيابية
         function launchDashboard() {
             const overlay = document.getElementById('welcomeOverlay');
             const dashboard = document.getElementById('mainDashboard');
@@ -231,7 +229,6 @@
             }, 800);
         }
 
-        // دالة التحقق من اختيار الصورة لتفعيل أو تعطيل زر الإرسال
         function validateImageSelection() {
             const fileInput = document.getElementById('proofImage');
             const submitBtn = document.getElementById('submitBtn');
@@ -247,7 +244,6 @@
             }
         }
 
-        // دالة إرسال التقرير والصورة إلى بوت التليجرام
         async function handleFormSubmit(event) {
             event.preventDefault();
             
@@ -261,7 +257,6 @@
                 return;
             }
 
-            // تحديث حالة الزر أثناء الإرسال
             submitBtn.innerText = "جاري رفع التقرير وتأكيد المهمة... 🔄";
             submitBtn.disabled = true;
 
@@ -279,17 +274,21 @@
                 });
 
                 const responseData = await apiResponse.json();
+                console.log("Telegram Response:", responseData);
 
                 if (apiResponse.ok && responseData.ok) {
                     alert("🔥 تم تسليم المهمة بنجاح يا بطلة! الصورة والتقرير وصلوا لشات تيليجرام فوراً.");
                     document.getElementById('studyForm').reset();
                     validateImageSelection();
                 } else {
-                    throw new Error(responseData.description || "فشل إرسال البيانات.");
+                    // إظهار سبب الخطأ الفعلي القادم من التيليجرام بدلاً من رسالة وهمية
+                    alert("⚠️ رفض التيليجرام الطلب: " + (responseData.description || "خطأ غير معروف"));
+                    submitBtn.innerText = "تسليم المهمة وإرسال التقرير ⚡";
+                    submitBtn.disabled = false;
                 }
             } catch (error) {
-                console.error("Telegram API Error:", error);
-                alert("⚠️ حدث خطأ أثناء إرسال التقرير، تأكد من اتصال الإنترنت ثم حاول مرة أخرى.");
+                console.error("Network/Fetch Error:", error);
+                alert("⚠️ خطأ في الاتصال بالبرمجية: تأكد أن التوكن صحيح وأن المتصفح لا يحجب الـ API.");
                 submitBtn.innerText = "تسليم المهمة وإرسال التقرير ⚡";
                 submitBtn.disabled = false;
             }
